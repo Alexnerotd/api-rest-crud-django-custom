@@ -35,3 +35,7 @@ class APIListUserView(APIView):
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response({'message':'Los datos del formulario no estan en el formato correcto'}, status=status.HTTP_400_BAD_REQUEST)
     
+
+
+
+    
