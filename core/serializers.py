@@ -19,7 +19,7 @@ class MyUserSerializerPOST(serializers.ModelSerializer):
         user = MyUser(**validate_data)
         user.set_password(validate_data['password'])
         user.save()
-        return user
+        return user 
 
 
 
@@ -27,3 +27,10 @@ class MyUserSerializerPUT(serializers.ModelSerializer):
     class Meta:
         model = MyUser
         fields = ['username', 'email','password', 'name', 'last_name']
+
+
+    def create(self, validate_data):
+        user = MyUser(**validate_data)
+        user.set_password(validate_data['password'])
+        user.save()
+        return user
