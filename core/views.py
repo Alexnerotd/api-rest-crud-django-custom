@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 from .serializers import MyUser, MyUserSerializerGET, MyUserSerializerPOST, MyUserSerializerPUT
 
@@ -37,5 +39,31 @@ class APIListUserView(APIView):
     
 
 
+class APIPutUserView(APIView):
 
+    def get_object(self, pk):
+        try:
+            return MyUser.objects.get(pk=pk)
+        except MyUser.DoesNotExist:
+            raise Http404
+        
+
+    def get(self, request, pk, format = None):
+        user = self.get_object(pk=pk)
+        user_serializer = MyUserSerializerGET(user)
+        return Response(user_serializer.data)
+        
+    def put(self, request, pk, format = None):
+
+        user = self.get_object(pk=pk)
+        user_serializer = MyUserSerializerPUT(user, data=self.request.data)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            return Response({'message': 'El usuario a sido actualizado correctamente'}, status=status.HTTP_200_OK)
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+    def delete(self, request, pk, format = None):
+        user_serializer = self.get_object(pk=pk)
+        user_serializer.delete()
+        return Response({'message':"El usuario ah sido eliminado de la base de datos"}, status=status.HTTP_200_OK)
